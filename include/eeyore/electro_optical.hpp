@@ -24,7 +24,7 @@ class ElectroOpticalCam
 {
 public:
   //constructor
-  ElectroOpticalCam();
+  ElectroOpticalCam( int h, int w );
 
   //setters
   void setHeight( int h );
@@ -37,6 +37,8 @@ public:
   //functions
   int configureTrigger( TriggerType trig );
   int resetTrigger();
+  int setupCamera();
+  int startCamera();
   int acquireImage();
   
   
@@ -48,7 +50,8 @@ private:
   SystemPtr system_;
   CameraPtr cam_;
 
-
+  ImageProcessor processor_;
+  
 };
 #endif
   

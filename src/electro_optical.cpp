@@ -113,7 +113,7 @@ int ElectroOpticalCam::configureTrigger( TriggerType trig )
   return result;
 }
 
-int setupCamera()
+int ElectroOpticalCam::setupCamera()
 {
   int result = 0;
 
@@ -126,13 +126,39 @@ int setupCamera()
 	}
 
       cam_ = AcquisitionMode.SetValue(AcquisitionMode_Continuous);
+      std::cout << "[EO CAMERA] Acquisition mode set to continuous" << std::endl;
+
+      processor_.SetColorProcessing(SPINNAKER_COLOR_PROCESSING_ALGORITHM_HQ_LINEAR);
+      
+    }
+  catch (Spinnaker::Exception& e)
+    {
+      std::cout << "[EO CAMERA] Error: " << e.what() << std::endl;
+      result = -1;
     }
 
   return result;
 }
-	    
+
+int ElectroOpticalCam::startCamera()
+{
+  int result = 0;
+
+  try
+    {
+      cam_ -> BeginAquisition();
+      std::cout << "[EO CAMERA] Camera has started" << std::endl;
+    }
+  catch (Spinnaker::Exception& e)
+    {
+      std::cout << "[EO CAMERA] Error: " << e.what() << std::endl;
+      result = -1;
+    }
+
+  return result;
+}	
   
-int acquireImage()
+int ElectroOpticalCam::acquireImage()
 {
   int result = 0;
 
