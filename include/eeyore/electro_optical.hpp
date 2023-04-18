@@ -25,18 +25,22 @@ class ElectroOpticalCam
 {
 public:
   //constructor
-  ElectroOpticalCam( int h, int w );
+  ElectroOpticalCam( int h, int w, TriggerType t );
 
   //setters
   void setHeight( int h );
   void setWidth( int w );
   void setTrigger( TriggerType t );
-
+  void setIntrinsicCoeffs( cv::Mat int_coeffs );
+  void setDistanceCoeffs( cv::Mat dist_coeffs );
+  
   //getters
   int getHeight();
   int getWidth();
   TriggerType getTrigger();
-
+  cv::Mat getIntrinsicCoeffs();
+  cv::Mat getDistanceCoeffs();
+  
   //functions
   int configureTrigger();
   int resetTrigger();
@@ -56,6 +60,9 @@ private:
   ImageProcessor processor_;
 
   TriggerType trig_;
+
+  cv::Mat intrinsic_coeffs_;
+  cv::Mat distance_coeffs_;
 };
 #endif
   

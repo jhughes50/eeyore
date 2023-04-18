@@ -5,10 +5,11 @@
 
 #include "eeyore/electro_optical.hpp"
 
-ElectroOpticalCam::ElectroOpticalCam( int h, int w )
+ElectroOpticalCam::ElectroOpticalCam( int h, int w, TriggerType t )
 {
   setHeight( h );
   setWidth( w );
+  setTrigger( t );
 
   system_ = System::GetInstance();
 
@@ -33,6 +34,16 @@ void ElectroOpticalCam::setTrigger( TriggerType t )
   trig_ = t;
 }
 
+void ElectroOpticalCam::setIntrinsicCoeffs( cv::Mat int_coeffs )
+{
+  intrinsic_coeffs_ = int_coeffs;
+}
+
+void ElectroOpticalCam::setDistanceCoeffs( cv::Mat dist_coeffs )
+{
+  distance_coeffs_ = dist_coeffs;
+}
+
 int ElectroOpticalCam::getHeight()
 {
   return height_;
@@ -46,6 +57,16 @@ int ElectroOpticalCam::getWidth()
 TriggerType ElectroOpticalCam::getTrigger()
 {
   return trig_;
+}
+
+cv::Mat ElectroOpticalCam::getIntrinsicCoeffs()
+{
+  return intrinsic_coeffs_;
+}
+
+cv::Mat ElectroOpticalCam::getDistanceCoeffs()
+{
+  return distance_coeffs_;
 }
 
 int ElectroOpticalCam::configureTrigger()
