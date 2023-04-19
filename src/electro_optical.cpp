@@ -77,11 +77,11 @@ int ElectroOpticalCam::configureTrigger()
     {
       if (trig_ == SOFTWARE)
 	{
-	  std::cout << "[EO CAMERA] Software Trigger set" << std::endl;
+	  std::cout << "[EO CAMERA] Configuring Software Trigger" << std::endl;
 	}
       else
 	{
-	  std::cout << "[EO CAMERA] Hardware Trigger set" << std::endl;
+	  std::cout << "[EO CAMERA] Configuring Hardware Trigger" << std::endl;
 	}
 
       if (!IsWritable(cam_->TriggerMode))
@@ -98,8 +98,6 @@ int ElectroOpticalCam::configureTrigger()
 	  std::cout << "[EO CAMERA] Unable to set trigger selector, aborting" << std::endl;
 	  return -1;
 	}
-
-      cam_ -> TriggerSelector.SetValue(TriggerSelector_FrameStart);
 
       std::cout << "[EO CAMERA] Trigger selector set to frame start" << std::endl;
 
@@ -122,7 +120,7 @@ int ElectroOpticalCam::configureTrigger()
 	      std::cout << "[EO CAMERA] Unable to set hardware trigger, aborting" << std::endl;
 	    }
 
-	  cam_ -> TriggerSource.SetValue(TriggerSource_Line0);
+	  cam_ -> TriggerSource.SetValue(TriggerSource_Line3);
 
 	  std::cout << "[EO CAMERA] Trigger source set to hardware" << std::endl;
 	}
@@ -228,7 +226,7 @@ cv::Mat ElectroOpticalCam::getFrame()
     }
   catch (Spinnaker::Exception& e)
     {
-      std::cout << "[EO CAMERA] Error: " << e.what() << std::endl;
+      std::cout << "[EO CAMERA] Error getting frame: " << e.what() << std::endl;
       return image_final;
     }
   
