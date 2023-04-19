@@ -8,6 +8,8 @@
 
 #include "Spinnaker.h"
 #include "SpinGenApi/SpinnakerGenApi.h"
+#include <opencv2/opencv.hpp>
+#include <string>
 
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
@@ -17,28 +19,37 @@ enum TriggerType
   {
     SOFTWARE,
     HARDWARE
-  }
+  };
 
   
 class ElectroOpticalCam
 {
 public:
   //constructor
-  ElectroOpticalCam();
+  ElectroOpticalCam( int h, int w, TriggerType t );
 
   //setters
   void setHeight( int h );
   void setWidth( int w );
-
+  void setTrigger( TriggerType t );
+  void setIntrinsicCoeffs( cv::Mat int_coeffs );
+  void setDistanceCoeffs( cv::Mat dist_coeffs );
+  
   //getters
   int getHeight();
   int getWidth();
-
-  //functions
-  int configureTrigger( TriggerType trig );
-  int resetTrigger();
-  int acquireImage();
+  TriggerType getTrigger();
+  cv::Mat getIntrinsicCoeffs();
+  cv::Mat getDistanceCoeffs();
   
+  //functions
+  int configureTrigger();
+  int resetTrigger();
+  int setupCamera();
+  int startCamera();
+  cv::Mat getFrame();
+  void closeCamera();
+  cv::Mat getParams(std::string file_path, std::string data);
   
 private:
 
@@ -48,7 +59,12 @@ private:
   SystemPtr system_;
   CameraPtr cam_;
 
+  ImageProcessor processor_;
 
+  TriggerType trig_;
+
+  cv::Mat intrinsic_coeffs_;
+  cv::Mat distance_coeffs_;
 };
 #endif
   
