@@ -53,6 +53,9 @@ public:
   cv::Mat getFrame();
   void closeCamera();
   cv::Mat getParams(std::string file_path, std::string data);
+  void printDeviceInfo();
+  std::string getSerialNumberFromCam();
+
   
 private:
 
@@ -68,6 +71,8 @@ private:
 
   cv::Mat intrinsic_coeffs_;
   cv::Mat distance_coeffs_;
+
+  std::string serial_number_;
 };
 #endif
   

@@ -281,17 +281,69 @@ cv::Mat ElectroOpticalCam::getParams(std::string file_path, std::string data)
 }
 
 
-int ELectroOpticalCam::printDeviceInfo()
+void ElectroOpticalCam::printDeviceInfo()
 {
   try
     {
       INodeMap& map = cam_ -> GetTLDeviceNodeMap();
 
+      FeatureList_t features;
+
+      CCategoryPtr category = map.GetNode("DeviceInformation");
+
+      if (IsReadable(category))
+	{
+	  category -> GetFeatures(features);
+
+	  FeatureList_t::const_iterator it;
+
+	  for (it = features.begin(); it != features.end(); ++it)
+	    {
+	      CNodePtr feature_node = *it;
+	      std::cout << "Name: " << feature_node->GetName();
+	      CValuePtr value = (CValuePtr)feature_node;
+	      std::cout << (IsReadable(value) ? value->ToString() : "Node not readable") << std::endl;
+	    }
+	}
+      else
+	{
+	  std::cout << "[EO CAMERA] Device information not readable" << std::endl;
+	}     
     }
   catch (Spinnaker::Exception& e)
     {
       std::cout << "Error: " << e.what() << std::endl;
-    {
-  
-  return 0;
+    }
 }
+
+
+std::string ElectroOpticalCam::getSerialNumberFromCam()
+{
+  std::string serial_number;
+  try
+    {
+      if (IsReadable(cam_->DeviceSerialNumber))
+	{
+	  serial_number = cam_ -> DeviceSerialNumber.GetValue();
+	  std::cout << "[EO CAMERA] Talking to camera with serial number: " << serial_number << std::endl;
+	}
+      else
+	{
+	  std::cout << "[EO CAMERA] Cant acquire serial number from camera" << std::endl;
+	}
+    }
+  catch (Spinnaker::Exception& e)
+    {
+      std::cout << "Error: " << e.what() << std::endl;
+    }
+
+  serial_number_ = serial_number;
+
+  return serial_number;
+}
+	
+     
+	
+
+
+    
