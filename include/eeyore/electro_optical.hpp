@@ -18,7 +18,10 @@ using namespace Spinnaker::GenICam;
 enum TriggerType
   {
     SOFTWARE,
-    HARDWARE
+    HARDWARE_LINE0,
+    HARDWARE_LINE1,
+    HARDWARE_LINE2,
+    HARDWARE_LINE3
   };
 
   

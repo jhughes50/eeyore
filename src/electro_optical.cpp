@@ -113,7 +113,40 @@ int ElectroOpticalCam::configureTrigger()
 
 	  std::cout << "[EO CAMERA] Trigger source set to software" << std::endl;
 	}
-      else
+      else if (trig_ == HARDWARE_LINE0)
+	{
+	  if (!IsWritable(cam_->TriggerSource))
+	    {
+	      std::cout << "[EO CAMERA] Unable to set hardware trigger, aborting" << std::endl;
+	    }
+
+	  cam_ -> TriggerSource.SetValue(TriggerSource_Line0);
+
+	  std::cout << "[EO CAMERA] Trigger source set to hardware" << std::endl;
+	}
+      else if (trig_ == HARDWARE_LINE1)
+	{
+	  if (!IsWritable(cam_->TriggerSource))
+	    {
+	      std::cout << "[EO CAMERA] Unable to set hardware trigger, aborting" << std::endl;
+	    }
+
+	  cam_ -> TriggerSource.SetValue(TriggerSource_Line1);
+
+	  std::cout << "[EO CAMERA] Trigger source set to hardware" << std::endl;
+	}
+      else if (trig_ == HARDWARE_LINE2)
+	{
+	  if (!IsWritable(cam_->TriggerSource))
+	    {
+	      std::cout << "[EO CAMERA] Unable to set hardware trigger, aborting" << std::endl;
+	    }
+
+	  cam_ -> TriggerSource.SetValue(TriggerSource_Line2);
+
+	  std::cout << "[EO CAMERA] Trigger source set to hardware" << std::endl;
+	}
+      else if (trig_ == HARDWARE_LINE3)
 	{
 	  if (!IsWritable(cam_->TriggerSource))
 	    {
@@ -245,4 +278,20 @@ cv::Mat ElectroOpticalCam::getParams(std::string file_path, std::string data)
   fs[data] >> M;
 
   return M;
+}
+
+
+int ELectroOpticalCam::printDeviceInfo()
+{
+  try
+    {
+      INodeMap& map = cam_ -> GetTLDeviceNodeMap();
+
+    }
+  catch (Spinnaker::Exception& e)
+    {
+      std::cout << "Error: " << e.what() << std::endl;
+    {
+  
+  return 0;
 }
