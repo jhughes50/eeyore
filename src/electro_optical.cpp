@@ -16,7 +16,7 @@ ElectroOpticalCam::ElectroOpticalCam( int h, int w, TriggerType t )
   CameraList cam_list = system_->GetCameras();
 
   cam_ = cam_list.GetByIndex(0);
-
+  cam_->Init();
 }
 
 void ElectroOpticalCam::setHeight( int h )
@@ -86,7 +86,7 @@ int ElectroOpticalCam::configureTrigger()
 
       if (!IsWritable(cam_->TriggerMode))
 	{
-	  std::cout << "[EO CAMERA] Uanble to disable trigger mode aborting" << std::endl;
+	  std::cout << "[EO CAMERA] Unable to disable trigger mode aborting" << std::endl;
 	}
 
       cam_ -> TriggerMode.SetValue(TriggerMode_Off);
@@ -189,10 +189,12 @@ int ElectroOpticalCam::startCamera()
   return result;
 }	
   
-cv::Mat ElectroOpticalCam::acquireImage()
+cv::Mat ElectroOpticalCam::getFrame()
 {
   int result = 0;
   cv::Mat image_final;
+  cv::Mat cv_image;
+  
   processor_.SetColorProcessing(SPINNAKER_COLOR_PROCESSING_ALGORITHM_HQ_LINEAR);
   
   try
@@ -206,15 +208,23 @@ cv::Mat ElectroOpticalCam::acquireImage()
 	    }
 	  cam_ -> TriggerSoftware.Execute();
 	}
+
       ImagePtr image_result = cam_ -> GetNextImage(1000);
+
       if (image_result->IsIncomplete())
 	{
 	  std::cout << "Image incomplete with status " << image_result->GetImageStatus() << "..." << std::endl;
 	}
+            
+      ImagePtr image_converted = processor_.Convert(image_result, PixelFormat_BGR8);
+
+      int h = image_converted->GetHeight();
+      int w = image_converted->GetWidth();
       
-      ImagePtr image_converted = processor_.Convert(image_result, PixelFormat_Mono8);
-      char* data = (char*)image_converted -> GetData();
-      image_final = cv::Mat(image_converted->GetHeight(), image_converted->GetWidth(), CV_16UC1, &data[0]);
+      cv_image = cv::Mat(h, w, CV_8UC3, image_converted->GetData(), image_converted->GetStride());
+      cv::undistort(cv_image, image_final, intrinsic_coeffs_, distance_coeffs_);
+      
+      image_result -> Release();
     }
   catch (Spinnaker::Exception& e)
     {
@@ -223,4 +233,18 @@ cv::Mat ElectroOpticalCam::acquireImage()
     }
   
   return image_final;
-}      
+}     
+
+void ElectroOpticalCam::closeCamera()
+{
+  cam_ -> EndAcquisition();
+}
+
+cv::Mat ElectroOpticalCam::getParams(std::string file_path, std::string data)
+{
+  cv::FileStorage fs(file_path, cv::FileStorage::READ);
+  cv::Mat M;
+  fs[data] >> M;
+
+  return M;
+}

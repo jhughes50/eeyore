@@ -9,6 +9,7 @@
 #include "Spinnaker.h"
 #include "SpinGenApi/SpinnakerGenApi.h"
 #include <opencv2/opencv.hpp>
+#include <string>
 
 using namespace Spinnaker;
 using namespace Spinnaker::GenApi;
@@ -46,8 +47,9 @@ public:
   int resetTrigger();
   int setupCamera();
   int startCamera();
-  cv::Mat acquireImage();
-  
+  cv::Mat getFrame();
+  void closeCamera();
+  cv::Mat getParams(std::string file_path, std::string data);
   
 private:
 
