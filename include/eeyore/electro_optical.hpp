@@ -32,6 +32,8 @@ public:
   //constructor
   ElectroOpticalCam( int h, int w, TriggerType t );
 
+  ~ElectroOpticalCam();
+  
   //setters
   void setHeight( int h );
   void setWidth( int w );

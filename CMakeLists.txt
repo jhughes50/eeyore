@@ -49,12 +49,14 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
   ${Spinnaker_INCLUDE_DIRS}
+  /usr/local/include/boson
 )
 
 link_directories(${Spinnaker_LIBRARIES})
 
 add_library(${PROJECT_NAME}
   src/electro_optical.cpp
+  src/boson.cpp
 )
 
 add_dependencies(${PROJECT_NAME}
@@ -65,6 +67,8 @@ add_dependencies(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
   ${OpenCV_INCLUDE_DIRS}
   ${catkin_LIBRARIES}
+  boson
+  FSLP
 )
 
 install(
