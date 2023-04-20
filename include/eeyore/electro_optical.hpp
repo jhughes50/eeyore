@@ -9,6 +9,7 @@
 #include "Spinnaker.h"
 #include "SpinGenApi/SpinnakerGenApi.h"
 #include <opencv2/opencv.hpp>
+#include <sstream>
 #include <string>
 
 using namespace Spinnaker;
@@ -51,7 +52,7 @@ public:
   int setupCamera();
   int startCamera();
   cv::Mat getFrame();
-  void closeCamera();
+  int writeFrame(std::string filename);
   cv::Mat getParams(std::string file_path, std::string data);
   void printDeviceInfo();
   std::string getSerialNumberFromCam();

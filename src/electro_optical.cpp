@@ -19,6 +19,11 @@ ElectroOpticalCam::ElectroOpticalCam( int h, int w, TriggerType t )
   cam_->Init();
 }
 
+~ElectroOpticalCam::ElectroOpticalCam()
+{
+  cam_ -> EndAcquisition();
+}
+
 void ElectroOpticalCam::setHeight( int h )
 {
   height_ = h;
@@ -264,12 +269,50 @@ cv::Mat ElectroOpticalCam::getFrame()
     }
   
   return image_final;
-}     
-
-void ElectroOpticalCam::closeCamera()
-{
-  cam_ -> EndAcquisition();
 }
+
+
+int ElectroOpticalCam::writeFrame(std::string filename)
+{
+  int result = 0;
+
+  processor_.SetColorProcessing(SPINNAKER_COLOR_PROCESSING_ALGORITHM_HQ_LINEAR);
+
+  std::ostringstream f_name;
+
+  f_name << filename;
+  
+  try
+    {
+      if (trig_ == SOFTWARE)
+	{
+	  if (!IsWritable(cam_->TriggerSoftware))
+	    {
+	      std::cout << "Unable to execute software trigger" << std::endl;
+	    }
+	  cam_ -> TriggerSoftware.Execute();
+	}
+
+      ImagePtr image_result = cam_ -> GetNextImage(1000);
+
+      if (image_result->IsIncomplete())
+	{
+	  std::cout << "Image incomplete with status " << image_result->GetImageStatus() << "..." << std::endl;
+	}
+            
+      ImagePtr image_converted = processor_.Convert(image_result, PixelFormat_BGR8);
+
+      image_converted -> Save(f_name.str().c_str());
+    }
+  catch (Spinnaker::Exception& e)
+    {
+      std::cout << "[EO CAMERA] Error writing frame: " << e.what() << std::endl;
+      return -1;
+    }
+
+  return result;
+}
+
 
 cv::Mat ElectroOpticalCam::getParams(std::string file_path, std::string data)
 {
@@ -296,11 +339,12 @@ void ElectroOpticalCam::printDeviceInfo()
 	  category -> GetFeatures(features);
 
 	  FeatureList_t::const_iterator it;
-
+	  std::cout << "[EO CAMERA] Printing Device Info" << std::endl;
+	  
 	  for (it = features.begin(); it != features.end(); ++it)
 	    {
 	      CNodePtr feature_node = *it;
-	      std::cout << "Name: " << feature_node->GetName();
+	      std::cout << "[EO CAMERA] " << feature_node->GetName() << " ";
 	      CValuePtr value = (CValuePtr)feature_node;
 	      std::cout << (IsReadable(value) ? value->ToString() : "Node not readable") << std::endl;
 	    }
