@@ -9,6 +9,7 @@
 #include "Spinnaker.h"
 #include "SpinGenApi/SpinnakerGenApi.h"
 #include <opencv2/opencv.hpp>
+#include <sstream>
 #include <string>
 
 using namespace Spinnaker;
@@ -18,7 +19,10 @@ using namespace Spinnaker::GenICam;
 enum TriggerType
   {
     SOFTWARE,
-    HARDWARE
+    HARDWARE_LINE0,
+    HARDWARE_LINE1,
+    HARDWARE_LINE2,
+    HARDWARE_LINE3
   };
 
   
@@ -48,8 +52,11 @@ public:
   int setupCamera();
   int startCamera();
   cv::Mat getFrame();
-  void closeCamera();
+  int writeFrame(std::string filename);
   cv::Mat getParams(std::string file_path, std::string data);
+  void printDeviceInfo();
+  std::string getSerialNumberFromCam();
+
   
 private:
 
@@ -65,6 +72,8 @@ private:
 
   cv::Mat intrinsic_coeffs_;
   cv::Mat distance_coeffs_;
+
+  std::string serial_number_;
 };
 #endif
   
