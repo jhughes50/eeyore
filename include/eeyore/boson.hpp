@@ -70,7 +70,8 @@ public:
   void AgcBasicLinear( Mat input_16, Mat output_16, int height, int width );
   int conductFcc();
   int printCamInfo();
-
+  cv::Mat getParams(std::string file_path, std::string data);
+  
 private:
   // class variables
   int32_t serial_dev_;

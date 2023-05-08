@@ -7,7 +7,6 @@
 
 Boson::Boson( int32_t serial_dev, int32_t serial_baud, int width, int height, std::string video_id, std::string sensor_name )
 {
-  ROS_INFO("[BOSON] in cam constructor");
   setSerialDev( serial_dev );
   setSerialBaud( serial_baud );
   setWidth( width );
@@ -105,23 +104,23 @@ int Boson::openSensor()
 {
   struct v4l2_capability cap;
 
-  ROS_INFO("[BOSON] Attempting to connect");
+  std::cout << "[BOSON] Attempting to connect to camera" << std::endl;
 
   if ((fd_ = open(video_id_.c_str(), O_RDWR)) < 0 )
     { 
-      perror("ERROR: Invalid video device");
+      perror("[BOSON] ERROR: Invalid video device");
       exit(1);
     }
   ROS_INFO_STREAM("Video ID: "<< video_id_);
   if (ioctl(fd_, VIDIOC_QUERYCAP, &cap) < 0)
     {
-      perror("ERROR: VIDIOC_QUERYCAP Video Capture is not avaialable");
+      perror("[BOSON] ERROR: VIDIOC_QUERYCAP Video Capture is not avaialable");
       exit(1);
     }
-  ROS_INFO("here1");
+
   if (!(cap.capabilities & V4L2_CAP_VIDEO_CAPTURE))
     {
-      perror("ERROR: this device does not handle single-planar video capture");
+      perror("[BOSON] ERROR: this device does not handle single-planar video capture");
       exit(1);
     }
   
@@ -132,10 +131,10 @@ int Boson::openSensor()
   format_.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
   format_.fmt.pix.width = width_;
   format_.fmt.pix.height = height_;
-  ROS_INFO("here2");
+
   if (ioctl(fd_, VIDIOC_S_FMT, &format_) < 0)
     {
-      perror("ERROR: VIDIO_S_FMT");
+      perror("[BOSON] ERROR: VIDIO_S_FMT");
       exit(1);
     }
   
@@ -146,7 +145,7 @@ int Boson::openSensor()
 
   if (ioctl(fd_, VIDIOC_REQBUFS, &bufrequest) < 0)
     {
-      perror("ERROR: VIDIO_REQBUFS");
+      perror("[BOSON] ERROR: VIDIO_REQBUFS");
       exit(1);
     }
 
@@ -158,7 +157,7 @@ int Boson::openSensor()
   
   if (ioctl(fd_, VIDIOC_QUERYBUF, &bufferinfo_) < 0)
     {
-      perror("ERROR: VIDIO_QUERTBUF");
+      perror("[BOSON] ERROR: VIDIO_QUERTBUF");
       exit(1);
     }
 
@@ -176,7 +175,7 @@ int Boson::openSensor()
 
   if (ioctl(fd_, VIDIOC_STREAMON, &type) < 0)
     {
-      perror("ERROR: VIDIOC_STREMON");
+      perror("[BOSON] ERROR: VIDIOC_STREMON");
       exit(1);
     }
 
@@ -194,13 +193,13 @@ int Boson::closeSensor()
 
   if (ioctl(fd_, VIDIOC_STREAMOFF, &type) < 0)
     {
-      perror("ERROR: VIDIOC_STREAMOFF");
+      perror("[BOSON] ERROR: VIDIOC_STREAMOFF");
       exit(1);
     }
 
   close(fd_);
 
-  ROS_INFO("[BOSON] Exited cleanly");
+  std::cout << "[BOSON] Exited cleanly" << std::endl;
 
   return EXIT_SUCCESS;
 }
@@ -210,14 +209,14 @@ cv::Mat Boson::getFrame()
   // Put the buffer in the incoming queue.
   if (ioctl(fd_, VIDIOC_QBUF, &bufferinfo_) < 0)
     {
-      perror("ERROR: VIDIOC_QBUF");
+      perror("[BOSON] ERROR: VIDIOC_QBUF");
       exit(1);
     }
 
   // The buffer's waiting in the outgoing queue.
   if (ioctl(fd_, VIDIOC_DQBUF, &bufferinfo_) < 0)
     {
-      perror("ERROR:VIDIOC_QBUF");
+      perror("[BOSON] ERROR: VIDIOC_QBUF");
       exit(1);
     } 
 
@@ -267,32 +266,32 @@ void Boson::grayScale16(Mat input_16, Mat output_16, int height, int width)
 int Boson::conductFcc()
 {
 
-  ROS_INFO("[BOSON] conducting flat field calibration");
+  std::cout << "[BOSON] conducting flat field calibration" << std::endl;
 
   FLR_RESULT result;
   result = Initialize(serial_dev_, serial_baud_);
 
   if (result)
     {
-      ROS_ERROR("[BOSON] Failed to initialize FFC");
+      perror("[BOSON] Failed to initialize FFC");
       Close();
       return -1;
     }
   else
     {
-      ROS_INFO("[BOSON] intialized FFC successfully");
+      std::cout << "[BOSON] intialized FFC successfully" << std::endl;
     }
 
   result = bosonRunFFC();
 
   if (result)
     {
-      ROS_ERROR("[BOSON] failed to run FFC");
+      perror("[BOSON] failed to run FFC");
       return -1;
     }
   else
     {
-      ROS_INFO("[BOSON] Successfully ran FFC");
+      std::cout << "[BOSON] Successfully ran FFC" << std::endl;
     }
   sleep(3);
   Close();
@@ -308,7 +307,7 @@ int Boson::printCamInfo()
 
   if (result)
     {
-      std::cout << "[BOSON] Failed to get camera info, aborting" << std::endl;
+      std::cerr << "[BOSON] Failed to get camera info, aborting" << std::endl;
       Close();
       return -1;
     }
@@ -319,7 +318,7 @@ int Boson::printCamInfo()
 
   if (result)
     {
-      std::cout << "[BOSON] Failed to get camera serial number, aborting" << std::endl;
+      perror("[BOSON] Failed to get camera serial number, aborting");
       Close();
       return -1;
     }
@@ -334,7 +333,7 @@ int Boson::printCamInfo()
 
   if (result)
     {
-      std::cout << "[BOSON] Failed to get camera software info, aborting" << std::endl;
+      std::cerr << "[BOSON] Failed to get camera software info, aborting" << std::endl;
       Close();
       return -1;
     }
@@ -348,7 +347,7 @@ int Boson::printCamInfo()
 
   if (result)
     {
-      std::cout << "[BOSON] Failed to get part number info, aborting" << std::endl;
+      perror("[BOSON] Failed to get part number info, aborting");
       Close();
       return -1;
     }
@@ -383,4 +382,14 @@ int Boson::printCamInfo()
 
   Close();
   return 0;
+}
+
+
+cv::Mat Boson::getParams(std::string file_path, std::string data)
+{
+  cv::FileStorage fs(file_path, FileStorage::READ);
+  cv::Mat M;
+  fs[data] >> M;
+
+  return M;
 }
