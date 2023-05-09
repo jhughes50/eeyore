@@ -19,7 +19,7 @@ ElectroOpticalCam::ElectroOpticalCam( int h, int w, TriggerType t )
   cam_->Init();
 }
 
-~ElectroOpticalCam::ElectroOpticalCam()
+ElectroOpticalCam::~ElectroOpticalCam()
 {
   cam_ -> EndAcquisition();
 }
