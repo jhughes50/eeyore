@@ -165,7 +165,7 @@ int Boson::openSensor()
 
   if (buffer_start == MAP_FAILED)
     {
-      perror("ERROR: mmap failed");
+      perror("[BOSON] ERROR: mmap failed");
       exit(1);
     }
 
@@ -183,6 +183,8 @@ int Boson::openSensor()
   thermal16_ = cv::Mat(height_, width_, CV_16UC1, buffer_start);
   thermal16_linear_ = cv::Mat(height_, width_, CV_8UC1, 1);
   thermal16_out_ = cv::Mat(height_, width_, CV_16UC1, 1);
+
+  std::cout << "[BOSON] Successfully conected to camera" << std::endl;
   
   return 1;
 }
@@ -266,7 +268,7 @@ void Boson::grayScale16(Mat input_16, Mat output_16, int height, int width)
 int Boson::conductFcc()
 {
 
-  std::cout << "[BOSON] conducting flat field calibration" << std::endl;
+  std::cout << "[BOSON] Conducting flat field calibration" << std::endl;
 
   FLR_RESULT result;
   result = Initialize(serial_dev_, serial_baud_);
@@ -279,14 +281,14 @@ int Boson::conductFcc()
     }
   else
     {
-      std::cout << "[BOSON] intialized FFC successfully" << std::endl;
+      std::cout << "[BOSON] Intialized FFC successfully" << std::endl;
     }
 
   result = bosonRunFFC();
 
   if (result)
     {
-      perror("[BOSON] failed to run FFC");
+      perror("[BOSON] Failed to run FFC");
       return -1;
     }
   else
