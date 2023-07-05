@@ -13,7 +13,7 @@ When instatiating the boson class the inputs are as follows
 6. `sensor_name (string)`: unique ID for the sensor
 
 To get pictures in a loop from the Boson follow the code below:
-```
+```cpp
 #include <eeyore/boson.hpp>
 
 int main()
@@ -54,8 +54,18 @@ int main()
 
 ### EO Camera ###
 The EO module in Eeyore should be able to get pictures and configure any camera that is capable of talking with the spinnaker SDK.
+The values for instantiating the class are as follows:
+1. `height (int)`: image height, use zero for max
+2. `width (int)`: iamge width, use zer for max
+3. `trigger (TriggerType)`: A value from the TriggerType enumeration to define what trigger to set
+
+The `TriggerType` Enumeration has the following options:
+- SOFTWARE: uses a software trigger
+- HARDWARE_LINE0: hardware trigger where the pulse is coming in on port 0 of the connector
+- HARDWARE_LINE{1,2,3}: hardware trigger where the pulse is coming in on port {1,2,3} of the connector
+
 The camera can be used like the following code:
-```
+```cpp
 #include "eeyore/electro_optical.hpp"
 
 int main()
