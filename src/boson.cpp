@@ -103,7 +103,6 @@ cv::Mat Boson::getDistanceCoeffs()
 int Boson::openSensor()
 {
   struct v4l2_capability cap;
-
   std::cout << "[BOSON] Attempting to connect to camera" << std::endl;
 
   if ((fd_ = open(video_id_.c_str(), O_RDWR)) < 0 )
@@ -208,6 +207,7 @@ int Boson::closeSensor()
 
 cv::Mat Boson::getFrame()
 {
+  std::cout << "[BOSON] Getting frame" << std::endl;
   // Put the buffer in the incoming queue.
   if (ioctl(fd_, VIDIOC_QBUF, &bufferinfo_) < 0)
     {
@@ -226,7 +226,7 @@ cv::Mat Boson::getFrame()
 
   cv::Mat thermal16_final;
   cv::undistort(thermal16_out_, thermal16_final, intrinsic_coeffs_, distance_coeffs_);
-
+  std::cout << "[BOSON] Returning frame" << std::endl;
   return thermal16_final;
 }
 
