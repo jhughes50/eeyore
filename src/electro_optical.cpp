@@ -232,7 +232,7 @@ cv::Mat ElectroOpticalCam::getFrame()
   cv::Mat cv_image;
   
   processor_.SetColorProcessing(SPINNAKER_COLOR_PROCESSING_ALGORITHM_HQ_LINEAR);
-  
+
   try
     {
       if (trig_ == SOFTWARE)
@@ -267,7 +267,7 @@ cv::Mat ElectroOpticalCam::getFrame()
       std::cout << "[EO CAMERA] Error getting frame: " << e.what() << std::endl;
       return image_final;
     }
-  
+
   return image_final;
 }
 
