@@ -53,7 +53,7 @@ int main()
 ```
 
 ### EO Camera ###
-The EO module in Eeyore should be able to get pictures and configure any camera that is capable of talking with the spinnaker SDK.
+The EO module in Eeyore should be able to get pictures and configure any camera that is capable of talking with the spinnaker SDK. You need Spinnaker3.0.0.118 (or later), although this has only been tested on 3.0.0.118. Any version earlier than this will not work!
 The values for instantiating the class are as follows:
 1. `height (int)`: image height, use zero for max
 2. `width (int)`: iamge width, use zer for max
