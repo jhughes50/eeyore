@@ -13,15 +13,16 @@ ElectroOpticalCam::ElectroOpticalCam( int h, int w, TriggerType t )
 
   system_ = System::GetInstance();
 
-  CameraList cam_list = system_->GetCameras();
+  cam_list_ = system_->GetCameras();
 
-  cam_ = cam_list.GetByIndex(0);
+  if (cam_list_.GetSize() == 0)
+    {
+      std::cout << "[EO CAMERA] No Cameras Found, exiting" << std::endl;
+      exit(1);
+    }
+  
+  cam_ = cam_list_.GetByIndex(0);
   cam_->Init();
-}
-
-ElectroOpticalCam::~ElectroOpticalCam()
-{
-  cam_ -> EndAcquisition();
 }
 
 void ElectroOpticalCam::setHeight( int h )
@@ -320,9 +321,28 @@ cv::Mat ElectroOpticalCam::getParams(std::string file_path, std::string data)
   cv::Mat M;
   fs[data] >> M;
 
+  if (M.rows == 0 || M.cols == 0)
+    {
+      std::cout << "[EO CAMERA] Unable to load calibration file at: " << file_path << ", returning empty matrix" << std::endl;
+      return M;
+    }
+  else
+    {
+      std::cout << "[EO CAMERA] Found file with data type " << data <<", load matrix of size: (" << M.rows << "," <<M.cols << ")" << std::endl;
+    }
   return M;
 }
 
+void ElectroOpticalCam::closeDevice()
+{
+  
+  cam_ -> EndAcquisition();
+  cam_ -> DeInit();
+  delete cam_;
+  
+  cam_list_.Clear();
+  system_ -> ReleaseInstance();
+}
 
 void ElectroOpticalCam::printDeviceInfo()
 {

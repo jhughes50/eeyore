@@ -31,8 +31,6 @@ class ElectroOpticalCam
 public:
   //constructor
   ElectroOpticalCam( int h, int w, TriggerType t );
-
-  ~ElectroOpticalCam();
   
   //setters
   void setHeight( int h );
@@ -56,6 +54,7 @@ public:
   cv::Mat getFrame();
   int writeFrame(std::string filename);
   cv::Mat getParams(std::string file_path, std::string data);
+  void closeDevice();
   void printDeviceInfo();
   std::string getSerialNumberFromCam();
 
@@ -67,7 +66,8 @@ private:
 
   SystemPtr system_;
   CameraPtr cam_;
-
+  CameraList cam_list_;
+  
   ImageProcessor processor_;
 
   TriggerType trig_;
