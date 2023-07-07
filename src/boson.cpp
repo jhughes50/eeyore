@@ -392,5 +392,14 @@ cv::Mat Boson::getParams(std::string file_path, std::string data)
   cv::Mat M;
   fs[data] >> M;
 
+  if (M.rows == 0 || M.cols == 0)
+    {
+      std::cout << "[BOSON] Unable to load calibration file at: " << file_path << ", returning empty matrix" << std::endl;
+      return M;
+    }
+  else
+    {
+      std::cout << "[BOSON] Found file with data type " << data <<", load matrix of size: (" << M.rows << "," <<M.cols << ")" << std::endl;
+    }
   return M;
 }
