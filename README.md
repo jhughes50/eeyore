@@ -6,7 +6,7 @@ A repo for EO/IR Camera payloads using the Sinnaker SDK for the EO camera (usual
 
 When instatiating the boson class the inputs are as follows
 1. `serial_dev (int32)`: this the numerical index of where the camera is supposed to be mounted,  `47 -> /dev/boson_ser` 
-2. `serial_baud` (int32)`: baudrate of the camera, default is 921600
+2. `serial_baud (int32)`: baudrate of the camera, default is 921600
 3. `width (int)`: width of the image, default value to use is 640
 4. `height (int)`: height of the image, default vale to use is 512
 5. `video_id (string)`: where the video stream of the camera is mounted
@@ -27,7 +27,7 @@ int main()
 
   //define where the calibration .yaml file is
   std::string cal_path;
-  cal_path = "/home/user1/bhg2_ws/src/eeyore/cal/ir_calibration.yaml"
+  cal_path = "/home/user1/bhg2_ws/src/eeyore/cal/ir_calibration.yaml";
 
   // get and set the intrinsic and distance coeffs from the calibration file
   cv::Mat intrinsic = boson.getParams(cal_path, "K");
@@ -47,6 +47,8 @@ int main()
   {
     img= boson.getFrame();
   }
+
+  boson.closeSensor();
 
   return 0;
 }
@@ -84,7 +86,7 @@ int main()
   blackfly.startCamera();
 
   // define the path to the .yaml file containing the calibration parameters
-  std::string cal_path = "/home/user1/catkin_ws/src/eeyore/cal/eo_calibration.yaml"
+  std::string cal_path = "/home/user1/catkin_ws/src/eeyore/cal/eo_calibration.yaml";
 
   // get and set the intrinsic and distance parameters
   cv::Mat intrinsic = blackfly.getParams(cal_path, "K");
@@ -106,6 +108,8 @@ int main()
     // OR write a the image directly (i.e. no conversion to opencv is done)
     // result = blackfly.writeFrame("frame.png");
    }
+
+  blackfly.closeDevice();
 
   return 0;
 }
