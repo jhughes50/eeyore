@@ -3,7 +3,7 @@
 int main()
 {
   // define the trigger type
-  TriggerType trig = HARDWARE_LINE3;
+  std::string trig =  "HARDWARE_LINE3";
 
   // instantiate the class
   ElectroOpticalCam blackfly(0,0,trig);

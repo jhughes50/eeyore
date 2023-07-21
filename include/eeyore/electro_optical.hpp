@@ -30,7 +30,7 @@ class ElectroOpticalCam
 {
 public:
   //constructor
-  ElectroOpticalCam( int h, int w, TriggerType t );
+  ElectroOpticalCam( int h, int w, std::string t );
   
   //setters
   void setHeight( int h );

@@ -6,11 +6,39 @@
 #include "eeyore/electro_optical.hpp"
 #include "exiv2/basicio.hpp"
 
-ElectroOpticalCam::ElectroOpticalCam( int h, int w, TriggerType t )
+ElectroOpticalCam::ElectroOpticalCam( int h, int w, std::string t )
 {
+  TriggerType trig;
+
+  if (t == "SOFTWARE")
+    {
+      trig = SOFTWARE;
+    }
+  else if (t == "HARDWARE_LINE0")
+    {
+      trig = HARDWARE_LINE0;
+    }
+  else if (t == "HARDWARE_LINE1")
+    {
+      trig = HARDWARE_LINE1;
+    }
+  else if (t == "HARDWARE_LINE2")
+    {
+      trig = HARDWARE_LINE2;
+    }
+  else if (t == "HARDWARE_LINE3")
+    {
+      trig = HARDWARE_LINE3;
+    }
+  else
+    {
+      std::cout << "[EO CAMERA] Invalid Trigger set, exiting" << std::endl;
+      exit(1);
+    }	
+  
   setHeight( h );
   setWidth( w );
-  setTrigger( t );
+  setTrigger( trig );
 
   system_ = System::GetInstance();
 
