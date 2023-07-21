@@ -55,6 +55,7 @@ public:
   int writeFrame(std::string filename);
   cv::Mat getParams(std::string file_path, std::string data);
   void closeDevice();
+  void restartDevice();
   void printDeviceInfo();
   std::string getSerialNumberFromCam();
 
