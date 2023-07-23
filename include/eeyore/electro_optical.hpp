@@ -30,7 +30,7 @@ class ElectroOpticalCam
 {
 public:
   //constructor
-  ElectroOpticalCam( int h, int w, TriggerType t );
+  ElectroOpticalCam( int h, int w, std::string t );
   
   //setters
   void setHeight( int h );
@@ -55,6 +55,7 @@ public:
   int writeFrame(std::string filename);
   cv::Mat getParams(std::string file_path, std::string data);
   void closeDevice();
+  void quickStart();
   void printDeviceInfo();
   std::string getSerialNumberFromCam();
 

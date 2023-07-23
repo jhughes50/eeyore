@@ -44,6 +44,8 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
+
+
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
@@ -69,6 +71,24 @@ target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
   boson
   FSLP
+)
+
+add_executable(boson_test examples/boson_test.cpp)
+add_dependencies(boson_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(boson_test
+  ${PROJECT_NAME}
+  ${OpenCV_LIBRARIES}
+  ${catkin_LIBRARIES}
+  ${Spinnaker_LIBRARIES}
+)
+
+add_executable(electro_optical_test examples/electro_optical_test.cpp)
+add_dependencies(electro_optical_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(electro_optical_test
+  ${PROJECT_NAME}
+  ${OpenCV_LIBRARIES}
+  ${catkin_LIBRARIES}
+  ${Spinnaker_LIBRARIES}
 )
 
 install(
