@@ -153,39 +153,43 @@ int ElectroOpticalCam::configureTrigger()
 	  if (!IsWritable(cam_->TriggerSource))
 	    {
 	      std::cout << "[EO CAMERA] Unable to set hardware trigger, aborting" << std::endl;
+	      return -1;
 	    }
 
 	  cam_ -> TriggerSource.SetValue(TriggerSource_Line0);
 
-	  std::cout << "[EO CAMERA] Trigger source set to hardware" << std::endl;
+	  std::cout << "[EO CAMERA] Trigger source set to hardware, on LINE0" << std::endl;
 	}
       else if (trig_ == HARDWARE_LINE1)
 	{
 	  if (!IsWritable(cam_->TriggerSource))
 	    {
 	      std::cout << "[EO CAMERA] Unable to set hardware trigger, aborting" << std::endl;
+	      return -1;
 	    }
 
 	  cam_ -> TriggerSource.SetValue(TriggerSource_Line1);
 
-	  std::cout << "[EO CAMERA] Trigger source set to hardware" << std::endl;
+	  std::cout << "[EO CAMERA] Trigger source set to hardware on LINE1" << std::endl;
 	}
       else if (trig_ == HARDWARE_LINE2)
 	{
 	  if (!IsWritable(cam_->TriggerSource))
 	    {
 	      std::cout << "[EO CAMERA] Unable to set hardware trigger, aborting" << std::endl;
+	      return -1;
 	    }
 
 	  cam_ -> TriggerSource.SetValue(TriggerSource_Line2);
 
-	  std::cout << "[EO CAMERA] Trigger source set to hardware" << std::endl;
+	  std::cout << "[EO CAMERA] Trigger source set to hardware, on LINE2" << std::endl;
 	}
       else if (trig_ == HARDWARE_LINE3)
 	{
 	  if (!IsWritable(cam_->TriggerSource))
 	    {
 	      std::cout << "[EO CAMERA] Unable to set hardware trigger, aborting" << std::endl;
+	      return -1;
 	    }
 
 	  cam_ -> TriggerSource.SetValue(TriggerSource_Line3);
@@ -195,7 +199,7 @@ int ElectroOpticalCam::configureTrigger()
 
       if (!IsWritable(cam_->TriggerMode))
 	{
-	  std::cout << "[EO CAMERA] Unable to disable trigger mode" << std::endl;
+	  std::cout << "[EO CAMERA] Unable to enable trigger mode" << std::endl;
 	  return -1;
 	}
 
@@ -208,6 +212,13 @@ int ElectroOpticalCam::configureTrigger()
     }
 
   return result;
+}
+
+void ElectroOpticalCam::quickStart()
+{
+  configureTrigger();
+  setupCamera();
+  startCamera();
 }
 
 int ElectroOpticalCam::setupCamera()
@@ -371,34 +382,6 @@ void ElectroOpticalCam::closeDevice()
   
   cam_list_.Clear();
   system_ -> ReleaseInstance();
-}
-
-void ElectroOpticalCam::restartDevice()
-{
-  std::cout << "[EO CAMERA] Restarting Camera" << std::endl;
-  cam_ -> EndAcquisition();
-  cam_ -> DeInit();
-  std::cout << "[EO CAMERA] deinit" << std::endl;
-  //delete cam_;
-  system_ -> UpdateCameras();
-  //delete system_;
-  std::cout << "[EO CAMERA] 1" << std::endl;
-  //system_ = System::GetInstance();
-  //cam_list_ = system_->GetCameras();
-  std::cout << "[EO CAMERA] 2" << std::endl;
-  if (cam_list_.GetSize() == 0)
-    {
-      std::cout << "[EO CAMERA] No Cameras Found while restarting, exiting" << std::endl;
-      exit(1);
-    }
-
-  cam_ = cam_list_.GetByIndex(0);
-  std::cout << "[EO CAMERA] 3" << std::endl;
-  cam_ -> Init();
-  std::cout << "[EO CAMERA] Initialized camera on restart" << std::endl;
-  configureTrigger();
-  setupCamera();
-  startCamera();
 }
 
 void ElectroOpticalCam::printDeviceInfo()
