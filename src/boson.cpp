@@ -384,6 +384,36 @@ int Boson::printCamInfo()
   return 0;
 }
 
+std::string Boson::getSerialNumber()
+{
+  FLR_RESULT result;
+  result = Initialize(serial_dev_, serial_baud_);
+
+  if (result)
+    {
+      std::cerr << "[BOSON] Failed to get camera serial number, cant connect to camera, aborting" << std::endl;
+      Close();
+      exit(-1);
+    }
+
+  uint32_t serial_num;
+
+  result = bosonGetCameraSN(&serial_num);
+
+  if (result)
+    {
+      perror("[BOSON] Failed to get camera serial number, aborting");
+      Close();
+      exit(-1);
+    }
+  else
+    {
+      serial_number_ = std::to_string(serial_num);
+      std::cout << "[BOSON] Talking to camera with serial number: " << serial_number_ << std::endl;
+    }
+  return serial_number_;
+}
+
 
 cv::Mat Boson::getParams(std::string file_path, std::string data)
 {
