@@ -110,7 +110,6 @@ int Boson::openSensor()
       perror("[BOSON] ERROR: Invalid video device");
       exit(1);
     }
-  ROS_INFO_STREAM("Video ID: "<< video_id_);
   if (ioctl(fd_, VIDIOC_QUERYCAP, &cap) < 0)
     {
       perror("[BOSON] ERROR: VIDIOC_QUERYCAP Video Capture is not avaialable");
