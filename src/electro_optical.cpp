@@ -4,7 +4,6 @@
  */
 
 #include "eeyore/electro_optical.hpp"
-#include "exiv2/basicio.hpp"
 
 ElectroOpticalCam::ElectroOpticalCam( int h, int w, std::string t )
 {
