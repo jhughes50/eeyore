@@ -31,7 +31,7 @@ class ElectroOpticalCam
 public:
   //constructor
   ElectroOpticalCam( int h, int w, std::string t );
-  ElectroOpticalCam();
+  ElectroOpticalCam() = default;
 
   //setters
   void setHeight( int h );
