@@ -31,7 +31,8 @@ class ElectroOpticalCam
 public:
   //constructor
   ElectroOpticalCam( int h, int w, std::string t );
-  
+  ElectroOpticalCam();
+
   //setters
   void setHeight( int h );
   void setWidth( int w );
@@ -49,6 +50,7 @@ public:
   //functions
   int configureTrigger();
   int resetTrigger();
+  void initCam();
   int setupCamera();
   int startCamera();
   cv::Mat getFrame();

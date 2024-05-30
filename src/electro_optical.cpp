@@ -53,6 +53,22 @@ ElectroOpticalCam::ElectroOpticalCam( int h, int w, std::string t )
   cam_->Init();
 }
 
+void ElectroOpticalCam::initCam()
+{  
+  system_ = System::GetInstance();
+
+  cam_list_ = system_->GetCameras();
+
+  if (cam_list_.GetSize() == 0)
+    {
+      std::cout << "[EO CAMERA] No Cameras Found, exiting" << std::endl;
+      exit(1);
+    }
+  
+  cam_ = cam_list_.GetByIndex(0);
+  cam_->Init();
+}
+
 void ElectroOpticalCam::setHeight( int h )
 {
   height_ = h;
