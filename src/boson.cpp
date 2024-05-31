@@ -13,6 +13,7 @@ Boson::Boson( int32_t serial_dev, int32_t serial_baud, int width, int height, st
   setHeight( height );
   setVideoId( video_id );
   setSensorName( sensor_name );
+  rectify_ = false;
 }
 
 Boson::~Boson()
@@ -223,8 +224,14 @@ cv::Mat Boson::getFrame()
   grayScale16(thermal16_, thermal16_out_, height_, width_);
 
   cv::Mat thermal16_final;
-  cv::undistort(thermal16_out_, thermal16_final, intrinsic_coeffs_, distance_coeffs_);
- 
+  if (rectify_ == true)
+    {
+      cv::undistort(thermal16_out_, thermal16_final, intrinsic_coeffs_, distance_coeffs_);
+    }
+  else
+    {
+      thermal16_final = thermal16_out_;
+    }
   return thermal16_final;
 }
 

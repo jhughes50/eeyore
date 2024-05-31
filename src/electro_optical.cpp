@@ -38,6 +38,7 @@ ElectroOpticalCam::ElectroOpticalCam( int h, int w, std::string t )
   setHeight( h );
   setWidth( w );
   setTrigger( trig );
+  rectify_ = false;
 
   system_ = System::GetInstance();
 
@@ -314,8 +315,14 @@ cv::Mat ElectroOpticalCam::getFrame()
       int w = image_converted->GetWidth();
       
       cv_image = cv::Mat(h, w, CV_8UC3, image_converted->GetData(), image_converted->GetStride());
-      cv::undistort(cv_image, image_final, intrinsic_coeffs_, distance_coeffs_);
-      
+      if (rectify_ == true)
+        {
+          cv::undistort(cv_image, image_final, intrinsic_coeffs_, distance_coeffs_);
+        }
+      else
+        {
+          image_final = cv_image;
+        }
       image_result -> Release();
     }
   catch (Spinnaker::Exception& e)
