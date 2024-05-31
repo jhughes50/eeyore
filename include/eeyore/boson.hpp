@@ -79,10 +79,11 @@ private:
   int32_t serial_baud_;
   int width_;
   int height_;
+  bool rectify_;
   std::string video_id_;
   std::string sensor_name_;
   std::string serial_number_;
-  
+    
   int fd_;
   struct v4l2_format format_;
   struct v4l2_buffer bufferinfo_;

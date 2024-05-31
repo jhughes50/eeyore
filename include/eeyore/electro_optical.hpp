@@ -66,6 +66,7 @@ private:
 
   int height_;
   int width_;
+  bool rectify_;
 
   SystemPtr system_;
   CameraPtr cam_;
