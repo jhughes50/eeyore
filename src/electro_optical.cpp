@@ -285,53 +285,46 @@ int ElectroOpticalCam::startCamera()
 cv::Mat ElectroOpticalCam::getFrame()
 {
   int result = 0;
-  cv::Mat image_final;
+  cv::Mat blank_image;
   cv::Mat cv_image;
-  
+  ImagePtr image_converted;
+
   processor_.SetColorProcessing(SPINNAKER_COLOR_PROCESSING_ALGORITHM_HQ_LINEAR);
 
   try
     {
-      if (trig_ == SOFTWARE)
+    if (trig_ == SOFTWARE)
 	{
 	  if (!IsWritable(cam_->TriggerSoftware))
 	    {
 	      std::cout << "Unable to execute software trigger" << std::endl;
-	      return image_final;
-	    }
+	      return blank_image;
+        }
 	  cam_ -> TriggerSoftware.Execute();
 	}
 
       ImagePtr image_result = cam_ -> GetNextImage(1000);
 
-      if (image_result->IsIncomplete())
+    if (image_result->IsIncomplete())
 	{
 	  std::cout << "Image incomplete with status " << image_result->GetImageStatus() << "..." << std::endl;
 	}
             
-      ImagePtr image_converted = processor_.Convert(image_result, PixelFormat_BGR8);
-
-      int h = image_converted->GetHeight();
-      int w = image_converted->GetWidth();
-      
-      cv_image = cv::Mat(h, w, CV_8UC3, image_converted->GetData(), image_converted->GetStride());
-      if (rectify_ == true)
-        {
-          cv::undistort(cv_image, image_final, intrinsic_coeffs_, distance_coeffs_);
-        }
-      else
-        {
-          image_final = cv_image;
-        }
-      image_result -> Release();
+    image_converted = processor_.Convert(image_result, PixelFormat_BGR8);     
     }
   catch (Spinnaker::Exception& e)
     {
       std::cout << "[EO CAMERA] Error getting frame: " << e.what() << std::endl;
-      return image_final;
+      return blank_image;
     }
+  //cv::imwrite("/home/dcist/data/test_ee.png", cv_image);
+  //std::cout << "Returning image" << std::endl;
 
-  return image_final;
+  unsigned int h = image_converted->GetHeight();
+  unsigned int w = image_converted->GetWidth();
+  cv_image = cv::Mat(h+image_converted->GetYPadding(), w+image_converted->GetXPadding(), CV_8UC3, image_converted->GetData(), image_converted->GetStride());
+   
+  return cv_image.clone();
 }
 
 
